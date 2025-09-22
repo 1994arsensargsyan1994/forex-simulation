@@ -1,6 +1,7 @@
 package org.arsen.forex.simulation.service.order;
 
 import org.arsen.forex.simulation.common.OrderStatus;
+import org.arsen.forex.simulation.persistence.account.AccountRepository;
 import org.arsen.forex.simulation.persistence.order.OrderRepository;
 import org.arsen.forex.simulation.persistence.order.PersistentOrder;
 import org.arsen.forex.simulation.persistence.rate.RateRepository;
@@ -24,18 +25,29 @@ class DefaultOrderService implements OrderService {
     private final OrderRepository orderRepository;
     private final RateRepository rateRepository;
     private final ExchangeService exchangeService;
+    private final AccountRepository accountRepository;
 
-    DefaultOrderService(List<OrderValidator> commonValidators, AccountLookupService accountLookupService, OrderRepository orderRepository, RateRepository rateRepository, ExchangeService exchangeService) {
+    DefaultOrderService(List<OrderValidator> commonValidators, AccountLookupService accountLookupService, OrderRepository orderRepository, RateRepository rateRepository, ExchangeService exchangeService, AccountRepository accountRepository) {
         this.commonValidators = commonValidators;
         this.accountLookupService = accountLookupService;
         this.orderRepository = orderRepository;
         this.rateRepository = rateRepository;
         this.exchangeService = exchangeService;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     @Transactional
     public OrderResult order(OrderParameters parameters) {
+
+        var existingTransfer = orderRepository.findByIdempotencyKey(parameters.idempotencyKey());
+        if (existingTransfer.isPresent()) {
+            var order = existingTransfer.get();
+
+            return order.isSuccess()
+                    ? new OrderResult(order.getIdempotencyKey(), false)
+                    : new OrderResult(List.of(OrderResultFailure.valueOf(order.getFailedReason())));
+        }
 
         var failures = new ArrayList<OrderResultFailure>();
         var fromAccountOpt = accountLookupService.lookup(parameters.sourceAccountId());
@@ -67,7 +79,9 @@ class DefaultOrderService implements OrderService {
         final var currencyRate = rateRepository.findByCurrencyFromAndCurrencyTo(fromAccount.getCurrency(), toAccount.getCurrency());
 
         fromAccount.debit(parameters.amount());
+        accountRepository.save(fromAccount);
         toAccount.credit(exchangeService.exchange(parameters.amount(), currencyRate.getRate()));
+        accountRepository.save(toAccount);
 
         final var order = new PersistentOrder(
                 parameters.idempotencyKey(), fromAccount, toAccount, parameters.amount(), currencyRate.getRate(), OrderStatus.COMPLETED

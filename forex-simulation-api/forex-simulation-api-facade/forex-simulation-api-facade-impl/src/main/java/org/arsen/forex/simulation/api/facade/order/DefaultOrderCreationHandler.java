@@ -50,6 +50,7 @@ class DefaultOrderCreationHandler implements OrderCreationHandler {
 
         response.setIdempotencyKey(result.getIdempotencyKey());
         response.setStatus(result.getStatus());
+        response.setCreated(result.isCreated());
 
         return response;
     }

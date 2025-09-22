@@ -39,6 +39,9 @@ public class PersistentAccount extends AuditableEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     private PersistentCustomer customer;
 
+    @Version
+    private Long version;
+
     /* Will be used by reflection */
     protected PersistentAccount() {
         super();

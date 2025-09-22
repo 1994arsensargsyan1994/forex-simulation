@@ -69,3 +69,19 @@ class SameCustomerDifferentCurrencyValidator implements OrderValidator {
         }
     }
 }
+
+@Component
+class SufficientFundsValidator implements OrderValidator {
+
+    @Override
+    public void validate(OrderCreationContext ctx, List<OrderResultFailure> out) {
+        if (ctx.parameters().amount() == null) {
+            out.add(OrderResultFailure.INVALID_AMOUNT);
+            return;
+        }
+
+        if (ctx.from().getBalance().compareTo(ctx.parameters().amount()) < 0) {
+            out.add(OrderResultFailure.INSUFFICIENT_FUNDS);
+        }
+    }
+}

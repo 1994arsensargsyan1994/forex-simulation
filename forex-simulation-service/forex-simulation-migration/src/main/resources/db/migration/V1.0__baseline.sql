@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS account
 (
     id               BIGINT DEFAULT NEXTVAL('account_seq'),
     number           VARCHAR(50)   NOT NULL UNIQUE,
+    version          BIGINT,
     balance          NUMERIC(15,2) NOT NULL DEFAULT 0,
     closing_date     TIMESTAMP,
     is_disabled      BOOLEAN       NOT NULL DEFAULT FALSE,

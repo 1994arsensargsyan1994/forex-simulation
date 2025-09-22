@@ -98,4 +98,7 @@ public class PersistentOrder extends AuditableEntity {
         this.failedReason = failedReason;
     }
 
+    public boolean isSuccess() {
+        return OrderStatus.COMPLETED.equals(status);
+    }
 }
