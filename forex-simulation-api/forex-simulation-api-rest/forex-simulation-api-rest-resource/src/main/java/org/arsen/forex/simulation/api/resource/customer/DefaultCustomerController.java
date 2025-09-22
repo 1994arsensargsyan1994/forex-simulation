@@ -5,10 +5,12 @@ import org.arsen.forex.simulation.api.model.request.CustomerCreationRequest;
 import org.arsen.forex.simulation.api.model.response.CustomerCreationResponse;
 import org.arsen.forex.simulation.api.model.response.LookupCustomerDetailsResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
-@Component
+@Validated
+@RestController
 class DefaultCustomerController implements CustomerController {
 
     private final CustomerServiceFacade customerServiceFacade;

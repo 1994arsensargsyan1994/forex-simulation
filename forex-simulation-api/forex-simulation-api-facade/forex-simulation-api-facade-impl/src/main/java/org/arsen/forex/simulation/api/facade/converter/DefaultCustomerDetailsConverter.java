@@ -12,8 +12,8 @@ class DefaultCustomerDetailsConverter implements CustomerDetailsConverter {
     public CustomerDetailsDto convert(@NotNull CustomerDetails source) {
         CustomerDetailsDto customerDetailsDto = new CustomerDetailsDto();
         customerDetailsDto.setId(source.id());
-        customerDetailsDto.setEmail(source.username());
-        customerDetailsDto.setUsername(source.email());
+        customerDetailsDto.setEmail(source.email());
+        customerDetailsDto.setUsername(source.username());
         customerDetailsDto.setDateOfBirth(source.dateOfBirth());
         return customerDetailsDto;
     }

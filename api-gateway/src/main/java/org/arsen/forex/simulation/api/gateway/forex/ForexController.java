@@ -94,10 +94,9 @@ public class ForexController {
         );
     }
 
-
     @Operation(
-            summary = "${customer.create.operation.summary}",
-            description = "${customer.create.operation.description}",
+            summary = "${account.create.operation.summary}",
+            description = "${account.create.operation.description}",
             responses = @ApiResponse(
                     content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
             )

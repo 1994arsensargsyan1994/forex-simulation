@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/customer")
 public interface CustomerController {
 
-    @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<CustomerCreationResponse> create(@Valid @RequestBody CustomerCreationRequest request);
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}/details")
     ResponseEntity<LookupCustomerDetailsResponse> lookupDetails(@PathVariable(name = "id") @NotNull @Positive Long id);
 }
