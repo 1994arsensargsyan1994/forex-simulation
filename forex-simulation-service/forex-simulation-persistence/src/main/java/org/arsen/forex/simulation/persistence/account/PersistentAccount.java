@@ -47,9 +47,10 @@ public class PersistentAccount extends AuditableEntity {
         super();
     }
 
-    public PersistentAccount(String number, CurrencyType currency, PersistentCustomer customer) {
+    public PersistentAccount(String number, CurrencyType currency, BigDecimal balance, PersistentCustomer customer) {
         this.number = number;
         this.currency = currency;
+        this.balance = balance;
         this.customer = customer;
     }
 

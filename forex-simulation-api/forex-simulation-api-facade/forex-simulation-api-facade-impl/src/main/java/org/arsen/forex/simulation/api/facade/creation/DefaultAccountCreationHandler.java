@@ -40,7 +40,7 @@ public class DefaultAccountCreationHandler implements AccountCreationHandler {
         }
 
         final AccountCreationResult result = accountService.create(new AccountCreationParameters(
-                customerId, request.getCurrency()
+                customerId, request.getCurrency() , request.getBalance()
         ));
 
         if (result.hasFailures()) {

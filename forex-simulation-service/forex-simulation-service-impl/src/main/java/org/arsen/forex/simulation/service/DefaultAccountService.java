@@ -49,6 +49,7 @@ class DefaultAccountService implements AccountService {
         final PersistentAccount account = new PersistentAccount(
                 UUID.randomUUID().toString(),
                 parameters.currency(),
+                parameters.balance(),
                 customer
         );
         return new AccountCreationResult(accountRepository.save(account).getNumber());
