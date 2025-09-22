@@ -4,7 +4,7 @@ import org.arsen.forex.simulation.api.model.request.CustomerCreationRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-class DefaultCustomerCreationRequestValidator implements RequestValidator<CustomerCreationRequest> {
+class CustomerCreationRequestValidator implements RequestValidator<CustomerCreationRequest> {
 
     // if you need specific case for validation
 }

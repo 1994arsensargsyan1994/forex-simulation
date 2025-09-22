@@ -38,17 +38,16 @@ class DefaultAccountService implements AccountService {
         }
 
         final PersistentCustomer customer = customerOpt.get();
-        final Optional<PersistentAccount> existingAccount = accountRepository.findAccountByTypeAndCustomer(parameters.type(), customer);
+        final Optional<PersistentAccount> existingAccount = accountRepository.findByCurrencyAndCustomer(parameters.currency(), customer);
 
         if (existingAccount.isPresent()) {
             return new AccountCreationResult(
-                    List.of(AccountCreationFailure.ACCOUNT_ALREADY_EXISTS_FOR_TYPE)
+                    List.of(AccountCreationFailure.ACCOUNT_ALREADY_EXISTS_FOR_CURRENCY_TYPE)
             );
         }
 
         final PersistentAccount account = new PersistentAccount(
                 UUID.randomUUID().toString(),
-                parameters.type(),
                 parameters.currency(),
                 customer
         );

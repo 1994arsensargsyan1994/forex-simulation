@@ -5,7 +5,7 @@ import org.arsen.forex.simulation.common.Failure;
 
 public enum AccountCreationFailure implements Failure {
 
-    ACCOUNT_ALREADY_EXISTS_FOR_TYPE("failure.account.already.exists", "Another Account already exists for type"),
+    ACCOUNT_ALREADY_EXISTS_FOR_CURRENCY_TYPE("failure.account.already.exists", "Another Account already exists for currency type"),
     CUSTOMER_NOT_FOUND("failure.account.customer.not.found", "Customer Not found");
 
     private final String code;

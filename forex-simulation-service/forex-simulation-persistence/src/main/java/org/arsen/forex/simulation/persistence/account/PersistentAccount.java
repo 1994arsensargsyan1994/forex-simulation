@@ -1,7 +1,6 @@
 package org.arsen.forex.simulation.persistence.account;
 
 import jakarta.persistence.*;
-import org.arsen.forex.simulation.common.AccountType;
 import org.arsen.forex.simulation.common.CurrencyType;
 import org.arsen.forex.simulation.persistence.AuditableEntity;
 import org.arsen.forex.simulation.persistence.customer.PersistentCustomer;
@@ -33,10 +32,6 @@ public class PersistentAccount extends AuditableEntity {
     private boolean isDisabled = false;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 20)
-    private AccountType type;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false, length = 20)
     private CurrencyType currency;
 
@@ -49,9 +44,8 @@ public class PersistentAccount extends AuditableEntity {
         super();
     }
 
-    public PersistentAccount(String number, AccountType type, CurrencyType currency, PersistentCustomer customer) {
+    public PersistentAccount(String number, CurrencyType currency, PersistentCustomer customer) {
         this.number = number;
-        this.type = type;
         this.currency = currency;
         this.customer = customer;
     }
@@ -70,10 +64,6 @@ public class PersistentAccount extends AuditableEntity {
 
     public boolean isDisabled() {
         return isDisabled;
-    }
-
-    public AccountType getType() {
-        return type;
     }
 
     public CurrencyType getCurrency() {

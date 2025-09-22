@@ -46,7 +46,6 @@ CREATE TABLE IF NOT EXISTS account
     balance          NUMERIC(15,2) NOT NULL DEFAULT 0,
     closing_date     TIMESTAMP,
     is_disabled      BOOLEAN       NOT NULL DEFAULT FALSE,
-    type             VARCHAR(20)   NOT NULL,
     currency         VARCHAR(20)   NOT NULL,
     customer_id      BIGINT        NOT NULL,
     created_at       TIMESTAMP     NOT NULL,
@@ -80,15 +79,16 @@ CREATE TABLE IF NOT EXISTS fx_order
 (
     id               BIGINT DEFAULT NEXTVAL('fx_order_seq'),
     account_from_id  BIGINT        NOT NULL,
-    account_to_id    BIGINT,
-    currency_from    VARCHAR(20)   NOT NULL,
-    currency_to      VARCHAR(20)   NOT NULL,
+    account_to_id    BIGINT        NOT NULL,
     amount           NUMERIC(18,4) NOT NULL,
     rate             NUMERIC(18,6) NOT NULL,
     status           VARCHAR(20)   NOT NULL,
+    failed_reason    VARCHAR(255),
+    idempotency_key  VARCHAR(64)   NOT NULL,
     created_at       TIMESTAMP     NOT NULL,
     last_modified_at TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT uq_fx_order_idempotency UNIQUE (idempotency_key)
 );
 ALTER TABLE fx_order
     ADD CONSTRAINT FK_fx_order_account_from_id FOREIGN KEY (account_from_id) REFERENCES account(id);

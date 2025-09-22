@@ -42,5 +42,27 @@ public class PersistentCurrencyRate extends AuditableEntity {
         this.lastUpdated = lastUpdated;
     }
 
-    // getters & setters...
+    public CurrencyType getCurrencyFrom() {
+        return currencyFrom;
+    }
+
+    public CurrencyType getCurrencyTo() {
+        return currencyTo;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }

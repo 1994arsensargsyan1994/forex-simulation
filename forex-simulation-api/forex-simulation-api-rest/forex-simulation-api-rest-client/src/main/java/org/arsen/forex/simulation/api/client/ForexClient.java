@@ -5,15 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.arsen.forex.simulation.api.model.request.AccountCreationRequest;
 import org.arsen.forex.simulation.api.model.request.CustomerCreationRequest;
-import org.arsen.forex.simulation.api.model.response.AccountCreationResponse;
-import org.arsen.forex.simulation.api.model.response.CustomerCreationResponse;
-import org.arsen.forex.simulation.api.model.response.LookupCustomerDetailsResponse;
+import org.arsen.forex.simulation.api.model.request.OrderRequest;
+import org.arsen.forex.simulation.api.model.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "forexClient", url = "${forex.service.url:http://localhost:8089}")
 public interface ForexClient {
@@ -37,4 +34,13 @@ public interface ForexClient {
             @PathVariable(name = "customerId") Long customerId,
             @NotNull @Valid @RequestBody AccountCreationRequest request
     );
+
+
+    @PostMapping("/order")
+    OrderResponse createOrder(@RequestHeader("Idempotency-Key") String idempotencyKey,
+                        @RequestBody OrderRequest request
+    );
+
+    @GetMapping(path = "/rate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    LookupRatesResponse lookupRates();
 }

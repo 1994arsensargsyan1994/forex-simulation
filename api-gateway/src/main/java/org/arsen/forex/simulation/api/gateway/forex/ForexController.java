@@ -10,9 +10,8 @@ import jakarta.validation.constraints.Positive;
 import org.arsen.forex.simulation.api.client.ForexClient;
 import org.arsen.forex.simulation.api.model.request.AccountCreationRequest;
 import org.arsen.forex.simulation.api.model.request.CustomerCreationRequest;
-import org.arsen.forex.simulation.api.model.response.AccountCreationResponse;
-import org.arsen.forex.simulation.api.model.response.CustomerCreationResponse;
-import org.arsen.forex.simulation.api.model.response.LookupCustomerDetailsResponse;
+import org.arsen.forex.simulation.api.model.request.OrderRequest;
+import org.arsen.forex.simulation.api.model.response.*;
 import org.arsen.forex.simulation.common.FailureDto;
 import org.arsen.forex.simulation.common.api.model.CommonFailures;
 import org.arsen.forex.simulation.common.api.model.FailureAwareResponse;
@@ -114,6 +113,46 @@ public class ForexController {
         return deferredResponse(
                 CompletableFuture.supplyAsync(() -> forexClient.createAccount(customerId, request), executor),
                 AccountCreationResponse::new
+        );
+    }
+
+    @Operation(
+            summary = "${order.create.operation.summary}",
+            description = "${order.create.operation.description}",
+            responses = @ApiResponse(
+                    content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
+            )
+    )
+    @PostMapping(
+            path = "/order",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public DeferredResult<ResponseEntity<OrderResponse>> createAccount(
+            @NotNull @RequestHeader("Idempotency-Key") String idempotencyKey,
+            @Valid @RequestBody final OrderRequest request
+    ) {
+        logger.info("Creating Order for given request: {} and idempotency key: {}.", request, idempotencyKey);
+        return deferredResponse(
+                CompletableFuture.supplyAsync(() -> forexClient.createOrder(idempotencyKey, request), executor),
+                OrderResponse::new
+        );
+    }
+
+    @Operation(
+            summary = "${rate.lookup.operation.summary}",
+            description = "${rate.lookup.operation.description}",
+            responses = @ApiResponse(
+                    content = @Content(schema = @Schema(oneOf = LookupCustomerDetailsResponse.class))
+            )
+    )
+    @GetMapping(path = "/rate",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public DeferredResult<ResponseEntity<LookupRatesResponse>> lookupRates() {
+        return deferredResponse(
+                CompletableFuture.supplyAsync(forexClient::lookupRates, executor),
+                LookupRatesResponse::new
         );
     }
 

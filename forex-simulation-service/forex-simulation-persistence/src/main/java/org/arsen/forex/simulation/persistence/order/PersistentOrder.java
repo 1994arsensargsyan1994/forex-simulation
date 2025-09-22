@@ -1,10 +1,9 @@
 package org.arsen.forex.simulation.persistence.order;
 
 import jakarta.persistence.*;
-import org.arsen.forex.simulation.common.CurrencyType;
+import org.arsen.forex.simulation.common.OrderStatus;
 import org.arsen.forex.simulation.persistence.AuditableEntity;
 import org.arsen.forex.simulation.persistence.account.PersistentAccount;
-import org.arsen.forex.simulation.persistence.common.OrderStatus;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -13,7 +12,15 @@ import java.math.BigDecimal;
 @Entity
 @Cacheable
 @SequenceGenerator(name = "default_gen", sequenceName = "fx_order_seq")
-@Table(name = "fx_order")
+@Table(
+        name = "fx_order",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uq_fx_order_idempotency",
+                        columnNames = {"idempotency_key"}
+                )
+        }
+)
 @DynamicInsert
 @DynamicUpdate
 public class PersistentOrder extends AuditableEntity {
@@ -23,16 +30,8 @@ public class PersistentOrder extends AuditableEntity {
     private PersistentAccount accountFrom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_to_id") // optional—if you credit a target currency account
+    @JoinColumn(name = "account_to_id")
     private PersistentAccount accountTo;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "currency_from", nullable = false, length = 20)
-    private CurrencyType currencyFrom;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "currency_to", nullable = false, length = 20)
-    private CurrencyType currencyTo;
 
     @Column(name = "amount", nullable = false, precision = 18, scale = 4)
     private BigDecimal amount;
@@ -44,22 +43,59 @@ public class PersistentOrder extends AuditableEntity {
     @Column(name = "status", nullable = false, length = 20)
     private OrderStatus status = OrderStatus.NEW;
 
-    protected PersistentOrder() { }
+    @Column(name = "idempotency_key", nullable = false, unique = true, length = 64)
+    private String idempotencyKey;
 
-    public PersistentOrder(PersistentAccount accountFrom,
-                           PersistentAccount accountTo,
-                           CurrencyType currencyFrom,
-                           CurrencyType currencyTo,
-                           BigDecimal amount,
-                           BigDecimal rate) {
-        this.accountFrom = accountFrom;
-        this.accountTo = accountTo;
-        this.currencyFrom = currencyFrom;
-        this.currencyTo = currencyTo;
-        this.amount = amount;
-        this.rate = rate;
-        this.status = OrderStatus.NEW;
+    @Column(name = "failed_reason")
+    private String failedReason;
+
+    protected PersistentOrder() {
     }
 
-    // getters...
+    public PersistentOrder(String idempotencyKey,
+                           PersistentAccount accountFrom,
+                           PersistentAccount accountTo,
+                           BigDecimal amount,
+                           BigDecimal rate,
+                           OrderStatus status) {
+        this.accountFrom = accountFrom;
+        this.accountTo = accountTo;
+        this.amount = amount;
+        this.idempotencyKey = idempotencyKey;
+        this.rate = rate;
+        this.status = status;
+    }
+
+    public PersistentAccount getAccountFrom() {
+        return accountFrom;
+    }
+
+    public PersistentAccount getAccountTo() {
+        return accountTo;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public String getFailedReason() {
+        return failedReason;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setFailedReason(String failedReason) {
+        this.failedReason = failedReason;
+    }
+
 }
