@@ -87,7 +87,7 @@ Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swa
 ## 📝 Notes
 
 - The service uses **UUID** for `account.number`.
-- Customers can have **multiple accounts**, including **multiple of the same type**.
+- Customers can have **multiple accounts**, including **different currencies type**.
 - Rates are updated randomly by the scheduler using the configured interval.
 - **API Gateway must implement:**
   - Security (authentication/authorization layer)
