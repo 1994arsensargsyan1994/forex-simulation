@@ -1,0 +1,30 @@
+rootProject.name = 'forex-simulation'
+
+
+include ':common'
+include ':common:common-core'
+include ':common:common-dto'
+include ':common:common-api-model'
+
+include ":forex-simulation-api"
+include ':forex-simulation-api:forex-simulation-api-app'
+include ':forex-simulation-api:forex-simulation-api-model'
+
+include ':forex-simulation-api:forex-simulation-api-facade'
+include ':forex-simulation-api:forex-simulation-api-facade:forex-simulation-api-facade-core'
+include ':forex-simulation-api:forex-simulation-api-facade:forex-simulation-api-facade-impl'
+
+include ':forex-simulation-api:forex-simulation-api-rest'
+include ':forex-simulation-api:forex-simulation-api-rest:forex-simulation-api-rest-client'
+include ':forex-simulation-api:forex-simulation-api-rest:forex-simulation-api-rest-resource'
+
+include ':forex-simulation-service'
+include ':forex-simulation-service:forex-simulation-persistence'
+include ':forex-simulation-service:forex-simulation-service-core'
+include ':forex-simulation-service:forex-simulation-service-impl'
+include ':forex-simulation-service:forex-simulation-migration'
+include 'forex-simulation-api:forex-simulation-api-rest:forex-simulation-api-rest-resource'
+
+include ':api-gateway'
+include 'api-gateway'
+
