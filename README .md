@@ -84,3 +84,10 @@ All routes go through **Gateway**:
 3. Start **forex-simulation-service** (`:forex-simulation-service-impl`).
 4. Start **api-gateway**.
 5. Open Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+
+## 🚀 Task Logic To Be Implemented
+
+- **Customer creation logic**: persist new customers, enforce unique email, validate input.
+- **Account creation logic**: create accounts per customer, allow multiple accounts per type.
+- **Lookup details logic**: fetch customer info.
