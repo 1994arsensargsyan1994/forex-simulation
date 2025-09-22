@@ -3,6 +3,9 @@
 This repo contains a **Spring Boot microservice system** with API Gateway + Forex Simulation service, structured as a **Gradle multi-module build**.
 
 ---
+Requirements: Java 17+, Gradle, PostgreSQL
+
+---
 
 ## 📂 Project Structure
 
