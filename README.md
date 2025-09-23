@@ -200,3 +200,10 @@ curl -s http://localhost:8081/customer/2/account
 - **Rate Limiting** (e.g., Spring Cloud Gateway RedisRateLimiter).
 - **Trust header**: gateway injects `X-GATEWAY-SECRET`, service rejects direct access without it.
 - CORS rules, TLS termination, request size limits, and minimal error leakage.
+
+---
+  ⚠️ Discussion — Concurrent Rate Updates
+
+Problem: When creating an order, the FX rate may change at the same time due to scheduler or external updates, causing uncertainty about which rate to apply.
+
+Solution: Store the snapshot rate (with timestamp) directly on the order for auditability, or use optimistic locking with retry to ensure the order always uses the latest rate.
