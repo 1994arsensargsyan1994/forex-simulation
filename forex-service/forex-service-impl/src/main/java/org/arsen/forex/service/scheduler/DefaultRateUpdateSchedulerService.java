@@ -24,7 +24,7 @@ class DefaultRateUpdateSchedulerService implements RateUpdateSchedulerService {
         this.rateRepository = rateRepository;
     }
 
-    @Scheduled(fixedDelayString = "${rate.update.job.cron.expression:10}", timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelayString = "${rates.update.interval:10}", timeUnit = TimeUnit.SECONDS)
     @Override
     public void execute() {
         logger.debug("Rate Update job was started...");

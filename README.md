@@ -1,112 +1,202 @@
-# Forex – Multi-Module Project
+# Forex – API Guide & Step‑by‑Step Walkthrough
 
-This repo contains a **Spring Boot microservice system** with API Gateway + Forex service, structured as a **Gradle multi-module build**.
+A **Spring Boot** microservice system with **API Gateway + Forex service** (Gradle multi‑module). This README documents the **request paths** and **response formats**, plus a **step‑by‑step flow** to try the system end‑to‑end.
 
+> Base URL (Gateway): `http://localhost:8081`  
+> Swagger: `http://localhost:8081/swagger-ui/index.html`
+
+---
 ---
 Requirements: Java 17+, Gradle, PostgreSQL
 
 ---
 
-## 📂 Project Structure
+## Conventions
 
+- **Success envelope**
+```json
+{ "successful": true, ... }
 ```
-forex
-├─ api-gateway                      # Spring Cloud Gateway + Swagger + Security & Rate limiting
-│
-├─ common                           # Shared modules (DTOs, API models, core utils)
-│   ├─ common-api-model
-│   ├─ common-core
-│   └─ common-dto
-│
-├─ forex-api             # Public API contracts
-│   ├─ forex-api-app     # Spring Boot app runner (API layer)
-│   ├─ forex-api-facade  # Facade layer (client to service)
-│   ├─ forex-api-model   # Request/Response DTOs
-│   └─ forex-api-rest    # REST client + resource contracts
-│
-├─ forex-service         # Business logic & persistence
-│   ├─ forex-migration   # Flyway migrations (DB schemas)
-│   ├─ forex-persistence # JPA entities, repositories
-│   ├─ forex-service-core# Domain services (customer, account, rates)
-│   └─ forex-service-impl# Implementations (REST controllers, schedulers, runners)
-│
-├─ build.gradle
-├─ settings.gradle
-└─ README.md
+- **Failure envelope** (HTTP 200 in this API)
+```json
+{ "successful": false, "failures": [ { "code": "<failure.code>", "reason": "<human readable>" } ] }
 ```
+- **Idempotency** (Orders): Header `Idempotency-Key: <your-key>`
+- **Validation**: request size limits, not‑null checks, email format
 
 ---
 
-## ⚙️ Architecture Overview
+## Endpoints
 
+### 1) Create Customer
+**POST** `/customer`  
+**Request**
+```json
+{ "name": "user", "email": "user@gmail.com", "dateOfBirth": "1998-09-23" }
 ```
-[ Client ] → [ api-gateway ] → [ forex-api ] → [ forex-service ] → [ PostgreSQL ]
+**Success (200)**
+```json
+{ "customerId": 2, "successful": true }
 ```
 
-- **api-gateway**
-  - Exposes REST endpoints.
-  - Provides **Swagger UI** for docs.
-  - Must implement **Security** (authentication/authorization) and **Rate Limiting** to protect backend services.
-- **forex-api**
-  - Defines API **interfaces**, **models**, and **contracts**.
-- **forex-service**
-  - Handles **business rules** and **persistence** (JPA + Flyway).
-- **common**
-  - Shared DTOs, error handling, and utility classes.
+### 2) Lookup Customer Details
+**GET** `/customer/{id}/details`  
+**Success (200)**
+```json
+{
+  "successful": true,
+  "details": { "id": 1, "username": "arsen", "email": "arsen@gmail.com", "dateOfBirth": "1998-09-23" }
+}
+```
+**Not Found (200)**
+```json
+{ "successful": false, "failures": [ { "code": "failure.customer.not.found", "reason": "Customer not found." } ] }
+```
+
+### 3) Create Account
+**POST** `/account/{customerId}`  
+**Request**
+```json
+{ "currency": "USD", "balance": 250 }
+```
+- A customer can have **multiple accounts**, **one per currency**.
+
+**Success (200)**
+```json
+{ "number": "d0140876-7343-4a4c-8d52-8de8d914812b", "successful": true }
+```
+**Duplicate currency (200)**
+```json
+{ "successful": false, "failures": [ { "code": "failure.account.already.exists", "reason": "Another Account already exists for currency type" } ] }
+```
+**Customer not found (200)**
+```json
+{ "successful": false, "failures": [ { "code": "failure.customer.not.found", "reason": "Customer not found." } ] }
+```
+
+### 4) Lookup Customer Accounts
+**GET** `/customer/{id}/account`  
+**Success (200)**
+```json
+{
+  "successful": true,
+  "count": 2,
+  "accounts": [
+    { "disabled": false, "number": "61a188e7-e800-4883-8e42-87374ccadbf9", "balance": 250, "isDisabled": false, "currency": "USD" },
+    { "disabled": false, "number": "d0140876-7343-4a4c-8d52-8de8d914812b", "balance": 250, "isDisabled": false, "currency": "AMD" }
+  ]
+}
+```
+**Customer not found (200)**
+```json
+{ "successful": false, "failures": [ { "code": "failure.customer.not.found", "reason": "Customer not found." } ] }
+```
+
+### 5) List Rates
+**GET** `/rates`  
+**Success (200)**
+```json
+{
+  "successful": true,
+  "count": 8,
+  "rates": [
+    { "id": 1, "from": "USD", "to": "AMD", "rate": 390 },
+    { "id": 2, "from": "AMD", "to": "USD", "rate": 0.0026 },
+    { "id": 3, "from": "USD", "to": "RUB", "rate": 95 },
+    { "id": 4, "from": "RUB", "to": "USD", "rate": 0.0105 },
+    { "id": 5, "from": "USD", "to": "GBP", "rate": 0.78 },
+    { "id": 6, "from": "GBP", "to": "USD", "rate": 1.28 },
+    { "id": 7, "from": "USD", "to": "JPY", "rate": 149 },
+    { "id": 8, "from": "JPY", "to": "USD", "rate": 0.0067 }
+  ]
+}
+```
+
+### 6) Create Order
+**POST** `/orders`  
+**Headers**: `Idempotency-Key: <your-key>`  
+**Request**
+```json
+{ "fromAccountId": "61a188e7-e800-4883-8e42-87374ccadbf9", "toAccountId": "d0140876-7343-4a4c-8d52-8de8d914812b", "amount": 25 }
+```
+**Success (200)**
+```json
+{ "idempotencyKey": "5855", "status": "COMPLETED", "created": false, "successful": true }
+```
+**Failure (200)**
+```json
+{
+  "created": false,
+  "successful": false,
+  "failures": [ { "code": "failure.order.insufficient_funds", "reason": "Insufficient funds in the source account" } ]
+}
+```
+Order statuses: `NEW`, `COMPLETED`, `FAILED`
 
 ---
 
-## ✅ Implemented Flows
+## Step‑by‑Step (cURL)
 
-- **Customer creation** — persist new customers, unique email enforced.
-- **Customer details lookup** — fetch customer with all accounts.
-- **Account creation** — create account for a given customer.
-- **Rates seeding (CommandLineRunner)** — seeds initial rates at startup.
-- **Get list of rates** — REST endpoint to fetch all rates.
-- **Scheduled rate updates** — randomizes rates every N seconds (configurable in properties).
+> Replace IDs/UUIDs with values returned by your instance.
+
+### A) Create Customer
+```bash
+curl -s -X POST http://localhost:8081/customer   -H "Content-Type: application/json"   -d '{ "name":"user", "email":"user@gmail.com", "dateOfBirth":"1998-09-23" }'
+# -> { "customerId": 2, "successful": true }
+```
+
+### B) Create Two Accounts (different currencies)
+```bash
+# USD
+curl -s -X POST http://localhost:8081/customer/2/account   -H "Content-Type: application/json"   -d '{ "currency":"USD", "balance":250 }'
+# -> { "number":"<USD-ACCOUNT-UUID>", "successful": true }
+
+# AMD
+curl -s -X POST http://localhost:8081/customer/2/account   -H "Content-Type: application/json"   -d '{ "currency":"AMD", "balance":250 }'
+# -> { "number":"<AMD-ACCOUNT-UUID>", "successful": true }
+```
+
+### C) Verify Customer & Accounts
+```bash
+curl -s http://localhost:8081/customer/2/details
+curl -s http://localhost:8081/customer/2/account
+```
+
+### D) Check Current Rates
+```bash
+curl -s http://localhost:8081/rates
+```
+
+### E) Create an Order (USD → AMD)
+```bash
+# Replace placeholders with actual account UUIDs from step B
+FROM="<USD-ACCOUNT-UUID>"
+TO="<AMD-ACCOUNT-UUID>"
+
+curl -s -X POST http://localhost:8081/order   -H "Content-Type: application/json"   -H "Idempotency-Key: 5855"   -d "{ "fromAccountId":"$FROM", "toAccountId":"$TO", "amount":25 }"
+# -> { "idempotencyKey":"5855", "status":"COMPLETED", "created":true|false, "successful":true }
+```
+
+### F) Re‑check Accounts (balances should change)
+- **From** account balance should **decrease by 25** (USD).
+- **To** account balance should **increase by 25 × rate(USD→AMD)**.
+```bash
+curl -s http://localhost:8081/customer/2/account
+```
 
 ---
 
-## 📡 API Endpoints (via Gateway)
+## Notes
 
-- `POST /customer` → create customer
-- `GET /customer/{id}/details` → lookup customer with accounts
-- `POST /account/{customerId}` → create account for customer
-- `GET /rates` → list all rates
-
-Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- Account `number` is a **UUID** for now (number generator may change in future).
+- Scheduled job updates rates every `rates.update.interval` milliseconds.
+- All calls should go **through the Gateway**.
 
 ---
 
-## ▶️ Running Locally
+## API Gateway Hardening (must implement)
 
-1. Start PostgreSQL (db: `forex_db`).
-3. Start `forex-service-impl`.
-4. Start `api-gateway`.
-5. Access Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-
----
-
-## 📝 Notes
-
-- The service uses **UUID** for `account.number`.
-- Customers can have **multiple accounts**, including **different currencies type**.
-- Rates are updated randomly by the scheduler using the configured interval.
-- **API Gateway must implement:**
-  - Security (authentication/authorization layer)
-  - Rate Limiting (prevent abuse and DoS)
-  - Request validation before forwarding to services
-
----
-
-## 🛡️ API Gateway Hardening (Security, Rate Limiting, etc.)
-
-The **API Gateway** is the only public entrypoint. Harden it and keep the service private.
-
-### Security must-haves
-- **Authentication & Authorization** (JWT/OAuth2/OpenID Connect). Protect all `/forex/api/**` routes.
-- **Zero trust to service**: add a shared header from Gateway → Service (service rejects requests without it).
-- **CORS**: restrict allowed origins/methods/headers.
-- **TLS/HTTPS**: terminate TLS at the gateway (or a load balancer in front).
-- **Input validation**: size limits, content-type checks, JSON schema if needed.
-- **Hide internals**: remove/obfuscate server banners, detailed errors.
+- **Authentication & Authorization** (JWT/OAuth2/OIDC) on `/forex/api/**` routes.
+- **Rate Limiting** (e.g., Spring Cloud Gateway RedisRateLimiter).
+- **Trust header**: gateway injects `X-GATEWAY-SECRET`, service rejects direct access without it.
+- CORS rules, TLS termination, request size limits, and minimal error leakage.
