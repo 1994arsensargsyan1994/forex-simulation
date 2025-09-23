@@ -11,7 +11,7 @@ public class OrderResult implements Result<OrderResultFailure> {
     private OrderStatus status;
     private boolean created;
 
-    private Collection<OrderResultFailure> failures;
+    private final Collection<OrderResultFailure> failures;
 
     public OrderResult(final String idempotencyKey, OrderStatus status , boolean created) {
         this.idempotencyKey = idempotencyKey;
