@@ -14,7 +14,7 @@ public class CustomerCreationRequest extends AbstractRequest {
 
     @NotBlank
     @Size(min = 5, max = 255)
-    @JsonProperty("name")
+    @JsonProperty("username")
     private String username;
 
     @NotBlank
