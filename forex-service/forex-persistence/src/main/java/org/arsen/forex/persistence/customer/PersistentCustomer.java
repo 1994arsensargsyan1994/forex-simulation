@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.arsen.forex.persistence.AuditableEntity;
 import org.arsen.forex.persistence.account.PersistentAccount;
-import org.arsen.forex.persistence.address.PersistentAddress;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -28,23 +27,12 @@ public class PersistentCustomer extends AuditableEntity {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private PersistentAddress address;
-
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PersistentAccount> accounts;
 
     /* Will be used by reflection */
     protected PersistentCustomer() {
         super();
-    }
-
-    public PersistentCustomer(String username, String email, LocalDate dateOfBirth, PersistentAddress address) {
-        this.username = username;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
-        this.address = address;
     }
 
     public PersistentCustomer(String username, String email, LocalDate dateOfBirth) {
@@ -65,17 +53,12 @@ public class PersistentCustomer extends AuditableEntity {
         return dateOfBirth;
     }
 
-    public PersistentAddress getAddress() {
-        return address;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("username", getUsername())
                 .append("email", getEmail())
                 .append("dateOfBirth", getDateOfBirth())
-                .append("address", getAddress())
                 .toString();
     }
 }

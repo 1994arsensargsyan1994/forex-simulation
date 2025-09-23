@@ -1,24 +1,8 @@
 -- Sequences
-CREATE SEQUENCE IF NOT EXISTS address_seq START 1 INCREMENT 50;
 CREATE SEQUENCE IF NOT EXISTS customer_seq START 1 INCREMENT 50;
 CREATE SEQUENCE IF NOT EXISTS account_seq START 1 INCREMENT 50;
 CREATE SEQUENCE IF NOT EXISTS currency_rate_seq START 1 INCREMENT 50;
 CREATE SEQUENCE IF NOT EXISTS fx_order_seq START 1 INCREMENT 50;
-
--- Address
-CREATE TABLE IF NOT EXISTS address
-(
-    id               BIGINT DEFAULT NEXTVAL('address_seq'),
-    street           VARCHAR(255),
-    city             VARCHAR(100)  NOT NULL,
-    state            VARCHAR(100),
-    zip_code         VARCHAR(20),
-    country          VARCHAR(100)  NOT NULL,
-    created_at       TIMESTAMP     NOT NULL,
-    last_modified_at TIMESTAMP,
-    PRIMARY KEY (id)
-);
-ALTER SEQUENCE address_seq OWNED BY address.id;
 
 -- Customer
 CREATE TABLE IF NOT EXISTS customer
@@ -27,15 +11,10 @@ CREATE TABLE IF NOT EXISTS customer
     username         VARCHAR(255)  NOT NULL UNIQUE,
     email            VARCHAR(255)  NOT NULL UNIQUE,
     date_of_birth    DATE          NOT NULL,
-    address_id       BIGINT,
     created_at       TIMESTAMP     NOT NULL,
     last_modified_at TIMESTAMP,
     PRIMARY KEY (id)
 );
-ALTER TABLE customer
-    ADD CONSTRAINT FK_customer_address_id
-        FOREIGN KEY (address_id) REFERENCES address(id);
-CREATE INDEX IF NOT EXISTS IDX_customer_address_id ON customer (address_id);
 ALTER SEQUENCE customer_seq OWNED BY customer.id;
 
 -- Account (per-currency balances)
