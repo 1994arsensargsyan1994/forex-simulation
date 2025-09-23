@@ -45,7 +45,6 @@ public final class ImmutableCustomerDetailsAdapter implements CustomerDetails {
         return dateOfBirth;
     }
 
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

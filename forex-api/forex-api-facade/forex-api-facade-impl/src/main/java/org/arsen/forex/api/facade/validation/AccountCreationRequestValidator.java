@@ -6,4 +6,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccountCreationRequestValidator implements RequestValidator<AccountCreationRequest> {
 
+    // if you need specific case for validation
 }
