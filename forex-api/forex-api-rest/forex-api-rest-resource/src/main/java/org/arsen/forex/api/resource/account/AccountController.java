@@ -6,7 +6,7 @@ import org.arsen.forex.api.model.response.AccountCreationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/account")
+@RequestMapping("/customer/account")
 public interface AccountController {
 
     @PostMapping(path = "/{customerId}")

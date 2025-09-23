@@ -101,7 +101,7 @@ public class ForexController {
             )
     )
     @PostMapping(
-            path = "/account/{customerId}",
+            path = "/customer/account/{customerId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )

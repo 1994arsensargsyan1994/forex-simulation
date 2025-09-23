@@ -25,7 +25,7 @@ public interface ForexClient {
     )
     LookupCustomerDetailsResponse lookupCustomerDetails(@PathVariable("id") @NotNull @Positive Long id);
 
-    @PostMapping(value = "/account/{customerId}",
+    @PostMapping(value = "/customer/account/{customerId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
