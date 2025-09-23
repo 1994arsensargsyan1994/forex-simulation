@@ -1,17 +1,3 @@
-/*
- * Copyright 2002 - 2023 Webb Fontaine Group.
- * All Rights Reserved.
- *
- * All information contained herein is, and remains
- * the property of Webb Fontaine Group and its suppliers,
- * if any. The intellectual and technical concepts contained
- * herein are proprietary to Webb Fontaine Group and its suppliers
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Webb Fontaine Group.
- */
-
 package org.arsen.forex.api.facade.converter;
 
 import org.arsen.forex.api.facade.AbstractForexServiceFacadeTest;
