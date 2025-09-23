@@ -45,7 +45,7 @@ class DefaultOrderService implements OrderService {
             var order = existingTransfer.get();
 
             return order.isSuccess()
-                    ? new OrderResult(order.getIdempotencyKey(), false)
+                    ? new OrderResult(order.getIdempotencyKey(), order.getStatus(), false)
                     : new OrderResult(List.of(OrderResultFailure.valueOf(order.getFailedReason())));
         }
 
@@ -88,6 +88,6 @@ class DefaultOrderService implements OrderService {
         );
         orderRepository.save(order);
 
-        return new OrderResult(order.getIdempotencyKey(), true);
+        return new OrderResult(order.getIdempotencyKey(), order.getStatus(), true);
     }
 }

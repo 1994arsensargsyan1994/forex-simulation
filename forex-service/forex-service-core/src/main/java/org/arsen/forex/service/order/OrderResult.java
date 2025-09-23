@@ -13,10 +13,10 @@ public class OrderResult implements Result<OrderResultFailure> {
 
     private Collection<OrderResultFailure> failures;
 
-    public OrderResult(final String idempotencyKey, boolean created) {
+    public OrderResult(final String idempotencyKey, OrderStatus status , boolean created) {
         this.idempotencyKey = idempotencyKey;
         this.created = created;
-        this.status = OrderStatus.NEW;
+        this.status = status;
         this.failures = null;
     }
 
