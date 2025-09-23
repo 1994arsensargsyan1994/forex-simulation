@@ -33,4 +33,16 @@ public class OrderRequest extends AbstractRequest {
     public BigDecimal getAmount() {
         return amount;
     }
+
+    public void setFromAccountId(@NotNull String fromAccountId) {
+        this.fromAccountId = fromAccountId;
+    }
+
+    public void setToAccountId(@NotNull String toAccountId) {
+        this.toAccountId = toAccountId;
+    }
+
+    public void setAmount(@Positive @NotNull BigDecimal amount) {
+        this.amount = amount;
+    }
 }

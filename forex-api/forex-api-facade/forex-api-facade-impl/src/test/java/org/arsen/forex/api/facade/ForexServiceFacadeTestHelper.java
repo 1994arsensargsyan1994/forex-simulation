@@ -3,6 +3,7 @@ package org.arsen.forex.api.facade;
 import org.apache.commons.lang3.RandomUtils;
 import org.arsen.forex.api.model.request.AccountCreationRequest;
 import org.arsen.forex.api.model.request.CustomerCreationRequest;
+import org.arsen.forex.api.model.request.OrderRequest;
 import org.arsen.forex.api.model.response.details.CustomerDetailsDto;
 import org.arsen.forex.common.CurrencyType;
 import org.arsen.forex.service.lookup.AccountDetails;
@@ -63,6 +64,18 @@ public final class ForexServiceFacadeTestHelper {
     // need migrate same util for generate random email
     private static String randomEmail() {
         return "testuser@gmail.com";
+    }
+
+    public static OrderRequest orderCreationRequest(BigDecimal amount) {
+        return orderCreationRequest(randomUUID(), randomUUID(), amount);
+    }
+
+    public static OrderRequest orderCreationRequest(String from, String to, BigDecimal amount) {
+        var orderRequest = new OrderRequest();
+        orderRequest.setFromAccountId(from);
+        orderRequest.setToAccountId(to);
+        orderRequest.setAmount(amount);
+        return orderRequest;
     }
 
     private static final class DummyCustomerDetails implements CustomerDetails {
