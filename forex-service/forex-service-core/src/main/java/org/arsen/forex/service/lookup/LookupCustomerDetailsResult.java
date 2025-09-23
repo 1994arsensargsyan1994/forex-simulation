@@ -23,7 +23,7 @@ public class LookupCustomerDetailsResult implements Result<LookupCustomerDetails
 
     public static LookupCustomerDetailsResult notFound() {
         return new LookupCustomerDetailsResult(
-                List.of(LookupCustomerDetailsFailure.URM_LIST_NOT_FOUND)
+                List.of(LookupCustomerDetailsFailure.CUSTOMER_NOT_FOUND)
         );
     }
 

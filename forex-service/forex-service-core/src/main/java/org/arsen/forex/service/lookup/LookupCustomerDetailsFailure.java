@@ -5,7 +5,7 @@ import org.arsen.forex.common.Failure;
 
 public enum LookupCustomerDetailsFailure implements Failure {
 
-    URM_LIST_NOT_FOUND("failure.customer.not.found", "Customer not found.");
+    CUSTOMER_NOT_FOUND("failure.customer.not.found", "Customer not found.");
 
     private final String code;
 
