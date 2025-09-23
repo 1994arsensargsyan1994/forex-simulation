@@ -7,12 +7,18 @@ import org.arsen.forex.persistence.customer.PersistentCustomer;
 import org.arsen.forex.service.creation.account.AccountCreationFailure;
 import org.arsen.forex.service.creation.account.AccountCreationParameters;
 import org.arsen.forex.service.creation.account.AccountCreationResult;
+import org.arsen.forex.service.lookup.AccountDetails;
+import org.arsen.forex.service.lookup.AccountLookupFailure;
+import org.arsen.forex.service.lookup.LookupAccountResult;
+import org.arsen.forex.service.lookup.details.ImmutableAccountDetailsAdapter;
 import org.arsen.forex.service.utils.AccountNumberGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 class DefaultAccountService implements AccountService {
@@ -54,4 +60,28 @@ class DefaultAccountService implements AccountService {
         );
         return new AccountCreationResult(accountRepository.save(account).getNumber());
     }
+
+    @Override
+    public LookupAccountResult lookupAll(Long customerId) {
+
+
+        final Optional<PersistentCustomer> customerOpt = customerRepository.findById(customerId);
+
+        if (customerOpt.isEmpty()) {
+            return LookupAccountResult.of(
+                    List.of(AccountLookupFailure.CUSTOMER_NOT_FOUND)
+            );
+        }
+
+        final PersistentCustomer customer = customerOpt.get();
+        final Collection<PersistentAccount> accounts = accountRepository.findAllByCustomer(customer);
+
+        final List<AccountDetails> list = accountRepository.findAllByCustomer(customer)
+                .stream()
+                .map(ImmutableAccountDetailsAdapter::new)
+                .collect(Collectors.toList());
+
+        return LookupAccountResult.of(list.size(), list);
+    }
+
 }

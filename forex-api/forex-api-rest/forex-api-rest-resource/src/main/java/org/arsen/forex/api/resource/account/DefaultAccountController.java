@@ -3,6 +3,7 @@ package org.arsen.forex.api.resource.account;
 import org.arsen.forex.api.facade.AccountServiceFacade;
 import org.arsen.forex.api.model.request.AccountCreationRequest;
 import org.arsen.forex.api.model.response.AccountCreationResponse;
+import org.arsen.forex.api.model.response.LookupAccountResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
@@ -23,5 +24,11 @@ class DefaultAccountController implements AccountController {
         Assert.notNull(request, "request must not be null");
         Assert.notNull(customerId, "customerId must not be null");
         return ResponseEntity.ok(serviceFacade.create(customerId, request));
+    }
+
+    @Override
+    public ResponseEntity<LookupAccountResponse> lookup(Long customerId) {
+        Assert.notNull(customerId, "customerId must not be null");
+        return ResponseEntity.ok(serviceFacade.lookup(customerId));
     }
 }

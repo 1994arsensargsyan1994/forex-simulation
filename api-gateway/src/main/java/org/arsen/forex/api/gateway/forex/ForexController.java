@@ -101,7 +101,7 @@ public class ForexController {
             )
     )
     @PostMapping(
-            path = "/customer/account/{customerId}",
+            path = "/customer/{customerId}/account",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -113,6 +113,27 @@ public class ForexController {
         return deferredResponse(
                 CompletableFuture.supplyAsync(() -> forexClient.createAccount(customerId, request), executor),
                 AccountCreationResponse::new
+        );
+    }
+
+    @Operation(
+            summary = "${accounts.lookup.operation.summary}",
+            description = "${accounts.lookup.operation.description}",
+            responses = @ApiResponse(
+                    content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
+            )
+    )
+    @GetMapping(
+            path = "/customer/{customerId}/account",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public DeferredResult<ResponseEntity<LookupAccountResponse>> lookupAccounts(
+            @NotNull @PathVariable(name = "customerId") Long customerId
+    ) {
+        logger.info("lookup Accounts for given customer id: {}.", customerId);
+        return deferredResponse(
+                CompletableFuture.supplyAsync(() -> forexClient.lookupAccounts(customerId), executor),
+                LookupAccountResponse::new
         );
     }
 

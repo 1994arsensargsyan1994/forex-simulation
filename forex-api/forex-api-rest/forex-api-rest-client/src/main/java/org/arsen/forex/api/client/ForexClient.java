@@ -25,7 +25,7 @@ public interface ForexClient {
     )
     LookupCustomerDetailsResponse lookupCustomerDetails(@PathVariable("id") @NotNull @Positive Long id);
 
-    @PostMapping(value = "/customer/account/{customerId}",
+    @PostMapping(value = "/customer/{customerId}/account",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -34,10 +34,15 @@ public interface ForexClient {
             @NotNull @Valid @RequestBody AccountCreationRequest request
     );
 
+    @GetMapping(value = "/customer/{customerId}/account",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    LookupAccountResponse lookupAccounts(@PathVariable(name = "customerId") Long customerId);
 
     @PostMapping("/order")
     OrderResponse createOrder(@RequestHeader("Idempotency-Key") String idempotencyKey,
-                        @RequestBody OrderRequest request
+                              @RequestBody OrderRequest request
     );
 
     @GetMapping(path = "/rate", consumes = MediaType.APPLICATION_JSON_VALUE)
