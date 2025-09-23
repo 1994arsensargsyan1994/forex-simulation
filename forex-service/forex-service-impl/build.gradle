@@ -1,0 +1,5 @@
+dependencies {
+    runtimeOnly('org.postgresql:postgresql')
+    api project(':forex-service:forex-persistence')
+    api project(':forex-service:forex-service-core')
+}

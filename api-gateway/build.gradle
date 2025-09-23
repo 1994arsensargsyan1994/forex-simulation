@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api project(':forex-simulation-api:forex-simulation-api-rest:forex-simulation-api-rest-client')
+    api project(':forex-api:forex-api-rest:forex-api-rest-client')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'

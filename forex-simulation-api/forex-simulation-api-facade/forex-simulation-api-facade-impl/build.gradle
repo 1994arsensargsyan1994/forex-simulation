@@ -1,6 +1,0 @@
-dependencies {
-    api project(':forex-simulation-service:forex-simulation-service-core')
-    api project(':forex-simulation-api:forex-simulation-api-facade:forex-simulation-api-facade-core')
-
-    implementation 'org.springframework:spring-context'
-}

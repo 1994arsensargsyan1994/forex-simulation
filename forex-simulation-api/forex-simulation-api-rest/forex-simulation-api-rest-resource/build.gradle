@@ -1,6 +1,0 @@
-dependencies {
-    implementation project(':forex-simulation-api:forex-simulation-api-facade:forex-simulation-api-facade-core')
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-}

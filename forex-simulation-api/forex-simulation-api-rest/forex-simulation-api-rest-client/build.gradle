@@ -1,6 +1,0 @@
-dependencies {
-    api project(':forex-simulation-api:forex-simulation-api-model')
-
-    api 'org.springframework.cloud:spring-cloud-openfeign-core'
-    api 'io.github.openfeign:feign-core'
-}

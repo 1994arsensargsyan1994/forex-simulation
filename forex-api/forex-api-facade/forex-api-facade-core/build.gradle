@@ -1,0 +1,3 @@
+dependencies {
+    api project(':forex-api:forex-api-model')
+}

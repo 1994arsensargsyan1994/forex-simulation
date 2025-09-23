@@ -1,6 +1,6 @@
-# Forex Simulation – Multi-Module Project
+# Forex – Multi-Module Project
 
-This repo contains a **Spring Boot microservice system** with API Gateway + Forex Simulation service, structured as a **Gradle multi-module build**.
+This repo contains a **Spring Boot microservice system** with API Gateway + Forex service, structured as a **Gradle multi-module build**.
 
 ---
 Requirements: Java 17+, Gradle, PostgreSQL
@@ -10,7 +10,7 @@ Requirements: Java 17+, Gradle, PostgreSQL
 ## 📂 Project Structure
 
 ```
-forex-simulation
+forex
 ├─ api-gateway                      # Spring Cloud Gateway + Swagger + Security & Rate limiting
 │
 ├─ common                           # Shared modules (DTOs, API models, core utils)
@@ -18,17 +18,17 @@ forex-simulation
 │   ├─ common-core
 │   └─ common-dto
 │
-├─ forex-simulation-api             # Public API contracts
-│   ├─ forex-simulation-api-app     # Spring Boot app runner (API layer)
-│   ├─ forex-simulation-api-facade  # Facade layer (client to service)
-│   ├─ forex-simulation-api-model   # Request/Response DTOs
-│   └─ forex-simulation-api-rest    # REST client + resource contracts
+├─ forex-api             # Public API contracts
+│   ├─ forex-api-app     # Spring Boot app runner (API layer)
+│   ├─ forex-api-facade  # Facade layer (client to service)
+│   ├─ forex-api-model   # Request/Response DTOs
+│   └─ forex-api-rest    # REST client + resource contracts
 │
-├─ forex-simulation-service         # Business logic & persistence
-│   ├─ forex-simulation-migration   # Flyway migrations (DB schemas)
-│   ├─ forex-simulation-persistence # JPA entities, repositories
-│   ├─ forex-simulation-service-core# Domain services (customer, account, rates)
-│   └─ forex-simulation-service-impl# Implementations (REST controllers, schedulers, runners)
+├─ forex-service         # Business logic & persistence
+│   ├─ forex-migration   # Flyway migrations (DB schemas)
+│   ├─ forex-persistence # JPA entities, repositories
+│   ├─ forex-service-core# Domain services (customer, account, rates)
+│   └─ forex-service-impl# Implementations (REST controllers, schedulers, runners)
 │
 ├─ build.gradle
 ├─ settings.gradle
@@ -40,16 +40,16 @@ forex-simulation
 ## ⚙️ Architecture Overview
 
 ```
-[ Client ] → [ api-gateway ] → [ forex-simulation-api ] → [ forex-simulation-service ] → [ PostgreSQL ]
+[ Client ] → [ api-gateway ] → [ forex-api ] → [ forex-service ] → [ PostgreSQL ]
 ```
 
 - **api-gateway**
   - Exposes REST endpoints.
   - Provides **Swagger UI** for docs.
   - Must implement **Security** (authentication/authorization) and **Rate Limiting** to protect backend services.
-- **forex-simulation-api**
+- **forex-api**
   - Defines API **interfaces**, **models**, and **contracts**.
-- **forex-simulation-service**
+- **forex-service**
   - Handles **business rules** and **persistence** (JPA + Flyway).
 - **common**
   - Shared DTOs, error handling, and utility classes.
@@ -80,8 +80,8 @@ Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swa
 
 ## ▶️ Running Locally
 
-1. Start PostgreSQL (db: `forex_simulation`).
-3. Start `forex-simulation-service-impl`.
+1. Start PostgreSQL (db: `forex_db`).
+3. Start `forex-service-impl`.
 4. Start `api-gateway`.
 5. Access Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 

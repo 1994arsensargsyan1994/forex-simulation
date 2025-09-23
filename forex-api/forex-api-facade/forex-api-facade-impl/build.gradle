@@ -1,0 +1,6 @@
+dependencies {
+    api project(':forex-service:forex-service-core')
+    api project(':forex-api:forex-api-facade:forex-api-facade-core')
+
+    implementation 'org.springframework:spring-context'
+}

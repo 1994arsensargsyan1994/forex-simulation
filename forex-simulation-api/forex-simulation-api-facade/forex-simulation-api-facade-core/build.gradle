@@ -1,3 +1,0 @@
-dependencies {
-    api project(':forex-simulation-api:forex-simulation-api-model')
-}
