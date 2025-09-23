@@ -7,12 +7,12 @@ import org.arsen.forex.persistence.customer.PersistentCustomer;
 import org.arsen.forex.service.creation.account.AccountCreationFailure;
 import org.arsen.forex.service.creation.account.AccountCreationParameters;
 import org.arsen.forex.service.creation.account.AccountCreationResult;
+import org.arsen.forex.service.utils.AccountNumberGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 class DefaultAccountService implements AccountService {
@@ -47,7 +47,7 @@ class DefaultAccountService implements AccountService {
         }
 
         final PersistentAccount account = new PersistentAccount(
-                UUID.randomUUID().toString(),
+                AccountNumberGenerator.generate(),
                 parameters.currency(),
                 parameters.balance(),
                 customer
