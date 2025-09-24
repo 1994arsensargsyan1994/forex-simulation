@@ -7,7 +7,7 @@ A **Spring Boot** microservice system with **API Gateway + Forex service** (Grad
 
 ---
 ---
-Requirements: Java 17+, Gradle, PostgreSQL
+Requirements: Java 17+, Gradle, Docker, PostgreSQL
 
 ---
 🚀 How to Run the Project
