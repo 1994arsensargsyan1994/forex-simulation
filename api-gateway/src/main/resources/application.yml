@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: forex-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: forex-api
+          uri: http://forex-api:8080
+          predicates:
+            - Path=/customers/**,/accounts/**,/orders/**,/rates/**
+
+server:
+  port: 8081
+
+forex:
+    service:
+      url: http://forex-api:8080

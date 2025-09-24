@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "forexClient", url = "${forex.service.url:http://localhost:8089}")
+@FeignClient(name = "forexClient", url = "${forex.service.url}")
 public interface ForexClient {
 
     @PostMapping(value = "/customer",

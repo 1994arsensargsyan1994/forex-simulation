@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: forex_db
+      POSTGRES_USER: forex
+      POSTGRES_PASSWORD: forex
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forex -d forex_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  forex-api:
+    build:
+      context: .
+      dockerfile: forex-api/forex-api-app/Dockerfile
+    container_name: forex-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/forex_db
+      SPRING_DATASOURCE_USERNAME: forex
+      SPRING_DATASOURCE_PASSWORD: forex
+      SPRING_PROFILES_ACTIVE: default
+    ports:
+      - "8080:8080"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-gateway
+    depends_on:
+      - forex-api
+    ports:
+      - "8081:8081"
+
+volumes:
+  pgdata:
