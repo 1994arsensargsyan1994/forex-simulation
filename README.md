@@ -10,7 +10,24 @@ A **Spring Boot** microservice system with **API Gateway + Forex service** (Grad
 Requirements: Java 17+, Gradle, PostgreSQL
 
 ---
+🚀 How to Run the Project
 
+This project runs as a multi-service stack using Docker Compose.
+It includes:
+	•	Postgres database (forex_db)
+	•	forex-api (backend service, hidden behind gateway)
+	•	api-gateway (Spring Cloud Gateway, exposed to host on port 8081)
+  
+2️⃣ Build Images
+From the project root:
+
+docker compose build
+
+3️⃣ Start Services
+
+docker compose up
+
+---
 ## Conventions
 
 - **Success envelope**
