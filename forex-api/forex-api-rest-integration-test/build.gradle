@@ -1,0 +1,10 @@
+dependencies {
+    testImplementation project(":forex-service:forex-service-impl")
+    testImplementation project(":forex-service:forex-migration")
+
+    testImplementation project(":forex-api:forex-api-facade:forex-api-facade-impl")
+    testImplementation project(":forex-api:forex-api-rest:forex-api-rest-resource")
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.testcontainers:postgresql'
+}

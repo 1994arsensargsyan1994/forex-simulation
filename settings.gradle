@@ -18,6 +18,8 @@ include ':forex-api:forex-api-rest'
 include ':forex-api:forex-api-rest:forex-api-rest-client'
 include ':forex-api:forex-api-rest:forex-api-rest-resource'
 
+include 'forex-api:forex-api-rest-integration-test'
+
 include ':forex-service'
 include ':forex-service:forex-persistence'
 include ':forex-service:forex-service-core'
