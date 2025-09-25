@@ -7,4 +7,5 @@ import org.springframework.stereotype.Component;
 public class AccountCreationRequestValidator implements RequestValidator<AccountCreationRequest> {
 
     // if you need specific case for validation
+    // for example we can manage currency type configuration validation for specific env or country
 }

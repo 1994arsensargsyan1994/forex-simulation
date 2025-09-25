@@ -5,6 +5,7 @@ import org.arsen.forex.common.api.model.FailureAwareResponse;
 
 public class OrderResponse extends FailureAwareResponse {
 
+    private Long id;
     private String idempotencyKey;
     private OrderStatus status;
     private boolean created;
@@ -35,5 +36,13 @@ public class OrderResponse extends FailureAwareResponse {
 
     public void setCreated(boolean created) {
         this.created = created;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

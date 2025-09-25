@@ -7,4 +7,5 @@ import org.springframework.stereotype.Component;
 class CustomerCreationRequestValidator implements RequestValidator<CustomerCreationRequest> {
 
     // if you need specific case for validation
+    // for example real email existing validation
 }

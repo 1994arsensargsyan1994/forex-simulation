@@ -7,13 +7,15 @@ import java.util.Collection;
 
 public class OrderResult implements Result<OrderResultFailure> {
 
+    private Long id;
     private String idempotencyKey;
     private OrderStatus status;
     private boolean created;
 
     private final Collection<OrderResultFailure> failures;
 
-    public OrderResult(final String idempotencyKey, OrderStatus status , boolean created) {
+    public OrderResult(final Long id, final String idempotencyKey, final OrderStatus status, boolean created) {
+        this.id = id;
         this.idempotencyKey = idempotencyKey;
         this.created = created;
         this.status = status;
@@ -30,6 +32,10 @@ public class OrderResult implements Result<OrderResultFailure> {
     @Override
     public Collection<OrderResultFailure> failures() {
         return failures;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getIdempotencyKey() {
