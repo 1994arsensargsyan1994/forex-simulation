@@ -7,10 +7,10 @@ import java.util.Collection;
 
 public class OrderResult implements Result<OrderResultFailure> {
 
-    private Long id;
-    private String idempotencyKey;
-    private OrderStatus status;
-    private boolean created;
+    private final Long id;
+    private final String idempotencyKey;
+    private final OrderStatus status;
+    private final boolean created;
 
     private final Collection<OrderResultFailure> failures;
 
@@ -22,8 +22,17 @@ public class OrderResult implements Result<OrderResultFailure> {
         this.failures = null;
     }
 
+    public OrderResult(final Long id, final Collection<OrderResultFailure> failures) {
+        this.idempotencyKey = null;
+        this.id = id;
+        this.created = false;
+        this.status = OrderStatus.FAILED;
+        this.failures = failures;
+    }
+
     public OrderResult(final Collection<OrderResultFailure> failures) {
         this.idempotencyKey = null;
+        this.id = null;
         this.created = false;
         this.status = OrderStatus.FAILED;
         this.failures = failures;
@@ -42,23 +51,11 @@ public class OrderResult implements Result<OrderResultFailure> {
         return idempotencyKey;
     }
 
-    public void setIdempotencyKey(String idempotencyKey) {
-        this.idempotencyKey = idempotencyKey;
-    }
-
     public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
     public boolean isCreated() {
         return created;
-    }
-
-    public void setCreated(boolean created) {
-        this.created = created;
     }
 }

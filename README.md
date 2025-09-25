@@ -148,9 +148,66 @@ docker compose up
   "failures": [ { "code": "failure.order.insufficient_funds", "reason": "Insufficient funds in the source account" } ]
 }
 ```
+or in same case we keep failed order in db with FAILED status and reason
+```json
+{
+	"id": 102,
+	"created": false,
+	"successful": false,
+	"failures": [
+		{
+			"code": "failure.order.insufficient_funds",
+			"reason": "Insufficient funds in the source account"
+		}
+	]
+}
+```
 Order statuses: `NEW`, `COMPLETED`, `FAILED`
 
 ---
+
+### 2) Lookup Order Details
+**GET** `/order/{id}/details`  
+**Success (200)**
+```json
+{
+	"successful": true,
+	"details": {
+		"currencyFrom": "USD",
+		"currencyTo": "AMD",
+		"amount": 100,
+		"rate": 0,
+		"status": "FAILED",
+		"failedReason": "INSUFFICIENT_FUNDS"
+	}
+}
+```
+or 
+```json
+{
+	"successful": true,
+	"details": {
+		"currencyFrom": "USD",
+		"currencyTo": "AMD",
+		"amount": 10,
+		"rate": 390,
+		"status": "COMPLETED",
+		"failedReason": null
+	}
+}
+```
+**Failure (200)**
+```json
+{
+	"successful": false,
+	"failures": [
+		{
+			"code": "failure.order.not.found",
+			"reason": "Order not found."
+		}
+	]
+}
+```
 
 ## Step‑by‑Step (cURL)
 

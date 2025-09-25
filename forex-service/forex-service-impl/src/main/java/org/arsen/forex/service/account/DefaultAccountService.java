@@ -1,9 +1,10 @@
-package org.arsen.forex.service;
+package org.arsen.forex.service.account;
 
 import org.arsen.forex.persistence.account.AccountRepository;
 import org.arsen.forex.persistence.account.PersistentAccount;
 import org.arsen.forex.persistence.customer.CustomerRepository;
 import org.arsen.forex.persistence.customer.PersistentCustomer;
+import org.arsen.forex.service.AccountService;
 import org.arsen.forex.service.creation.account.AccountCreationFailure;
 import org.arsen.forex.service.creation.account.AccountCreationParameters;
 import org.arsen.forex.service.creation.account.AccountCreationResult;

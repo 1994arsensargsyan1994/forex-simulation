@@ -1,11 +1,12 @@
-package org.arsen.forex.service;
+package org.arsen.forex.service.customer;
 
 import org.arsen.forex.persistence.customer.CustomerRepository;
 import org.arsen.forex.persistence.customer.PersistentCustomer;
+import org.arsen.forex.service.CustomerService;
 import org.arsen.forex.service.creation.customer.CustomerCreationFailure;
 import org.arsen.forex.service.creation.customer.CustomerCreationParameters;
 import org.arsen.forex.service.creation.customer.CustomerCreationResult;
-import org.arsen.forex.service.lookup.CustomerLookupService;
+import org.arsen.forex.service.lookup.customer.CustomerLookupService;
 import org.arsen.forex.service.lookup.LookupCustomerDetailsResult;
 import org.arsen.forex.service.lookup.details.ImmutableCustomerDetailsAdapter;
 import org.springframework.stereotype.Service;

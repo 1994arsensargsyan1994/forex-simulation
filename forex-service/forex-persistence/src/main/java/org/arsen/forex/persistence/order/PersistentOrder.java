@@ -21,6 +21,13 @@ import java.math.BigDecimal;
                 )
         }
 )
+@NamedEntityGraph(
+        name = "order.withAccounts",
+        attributeNodes = {
+                @NamedAttributeNode("accountFrom"),
+                @NamedAttributeNode("accountTo")
+        }
+)
 @DynamicInsert
 @DynamicUpdate
 public class PersistentOrder extends AuditableEntity {

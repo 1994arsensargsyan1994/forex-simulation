@@ -83,7 +83,7 @@ public class ForexController {
     @GetMapping(path = "/customer/{id}/details",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public DeferredResult<ResponseEntity<LookupCustomerDetailsResponse>> lookupDetails(
+    public DeferredResult<ResponseEntity<LookupCustomerDetailsResponse>> lookupCustomerDetails(
             @PathVariable("id") @NotNull @Positive Long id
     ) {
         logger.info("Lookup Customer details for given ID: {}.", id);
@@ -157,6 +157,26 @@ public class ForexController {
         return deferredResponse(
                 CompletableFuture.supplyAsync(() -> forexClient.createOrder(idempotencyKey, request), executor),
                 OrderResponse::new
+        );
+    }
+
+    @Operation(
+            summary = "${order.lookup.details.operation.summary}",
+            description = "${order.lookup.details.operation.description}",
+            responses = @ApiResponse(
+                    content = @Content(schema = @Schema(oneOf = LookupCustomerDetailsResponse.class))
+            )
+    )
+    @GetMapping(path = "/order/{id}/details",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public DeferredResult<ResponseEntity<LookupOrderDetailsResponse>> lookupOrderDetails(
+            @PathVariable("id") @NotNull @Positive Long id
+    ) {
+        logger.info("Lookup Order details for given ID: {}.", id);
+        return deferredResponse(
+                CompletableFuture.supplyAsync(() -> forexClient.lookupOrderDetails(id), executor),
+                LookupOrderDetailsResponse::new
         );
     }
 

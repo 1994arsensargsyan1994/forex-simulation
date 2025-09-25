@@ -27,7 +27,7 @@ class DefaultCustomerLookupHandler implements CustomerLookupHandler {
         final LookupCustomerDetailsResponse response = new LookupCustomerDetailsResponse();
 
         if (lookupDetailsResult.hasFailures()) {
-            logger.warn("Lookup URM list details failed with: {}.", lookupDetailsResult.failures());
+            logger.warn("Lookup Customer details failed with: {}.", lookupDetailsResult.failures());
             response.setResultFailures(lookupDetailsResult.failures());
             return response;
         }

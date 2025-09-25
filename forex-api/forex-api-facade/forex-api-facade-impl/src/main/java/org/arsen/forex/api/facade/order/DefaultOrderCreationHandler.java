@@ -44,6 +44,7 @@ class DefaultOrderCreationHandler implements OrderCreationHandler {
 
         if (result.hasFailures()) {
             response.setResultFailures(result.failures());
+            response.setId(result.getId());
             logger.warn("Create Order validation failed with: {}.", result.failures());
             return response;
         }

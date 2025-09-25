@@ -6,12 +6,16 @@ import org.arsen.forex.persistence.order.OrderRepository;
 import org.arsen.forex.persistence.order.PersistentOrder;
 import org.arsen.forex.persistence.rate.RateRepository;
 import org.arsen.forex.service.OrderService;
+import org.arsen.forex.service.lookup.LookupOrderDetailsResult;
 import org.arsen.forex.service.lookup.account.AccountLookupService;
+import org.arsen.forex.service.lookup.details.ImmutableOrderDetailsAdapter;
+import org.arsen.forex.service.lookup.order.OrderLookupService;
 import org.arsen.forex.service.order.validator.OrderCreationContext;
 import org.arsen.forex.service.order.validator.OrderValidator;
 import org.arsen.forex.service.rate.ExchangeService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,14 +26,21 @@ class DefaultOrderService implements OrderService {
 
     private final List<OrderValidator> commonValidators;
     private final AccountLookupService accountLookupService;
+    private final OrderLookupService orderLookupService;
     private final OrderRepository orderRepository;
     private final RateRepository rateRepository;
     private final ExchangeService exchangeService;
     private final AccountRepository accountRepository;
 
-    DefaultOrderService(List<OrderValidator> commonValidators, AccountLookupService accountLookupService, OrderRepository orderRepository, RateRepository rateRepository, ExchangeService exchangeService, AccountRepository accountRepository) {
+    DefaultOrderService(List<OrderValidator> commonValidators,
+                        AccountLookupService accountLookupService,
+                        OrderLookupService orderLookupService, OrderRepository orderRepository,
+                        RateRepository rateRepository, ExchangeService exchangeService,
+                        AccountRepository accountRepository
+    ) {
         this.commonValidators = commonValidators;
         this.accountLookupService = accountLookupService;
+        this.orderLookupService = orderLookupService;
         this.orderRepository = orderRepository;
         this.rateRepository = rateRepository;
         this.exchangeService = exchangeService;
@@ -46,7 +57,7 @@ class DefaultOrderService implements OrderService {
 
             return order.isSuccess()
                     ? new OrderResult(order.id(), order.getIdempotencyKey(), order.getStatus(), false)
-                    : new OrderResult(List.of(OrderResultFailure.valueOf(order.getFailedReason())));
+                    : new OrderResult(order.id(), List.of(OrderResultFailure.valueOf(order.getFailedReason())));
         }
 
         var failures = new ArrayList<OrderResultFailure>();
@@ -73,7 +84,7 @@ class DefaultOrderService implements OrderService {
             );
             order.setFailedReason(failures.get(0).name());
             orderRepository.save(order);
-            return new OrderResult(failures);
+            return new OrderResult(order.id(), failures);
         }
 
         final var currencyRate = rateRepository.findByCurrencyFromAndCurrencyTo(fromAccount.getCurrency(), toAccount.getCurrency());
@@ -89,5 +100,14 @@ class DefaultOrderService implements OrderService {
         orderRepository.save(order);
 
         return new OrderResult(order.id(), order.getIdempotencyKey(), order.getStatus(), true);
+    }
+
+    @Override
+    public LookupOrderDetailsResult lookupDetails(Long id) {
+        Assert.notNull(id, "Null was passed as an argument for parameter 'id'.");
+        return orderLookupService.lookup(id)
+                .map(ImmutableOrderDetailsAdapter::new)
+                .map(LookupOrderDetailsResult::new)
+                .orElseGet(LookupOrderDetailsResult::notFound);
     }
 }

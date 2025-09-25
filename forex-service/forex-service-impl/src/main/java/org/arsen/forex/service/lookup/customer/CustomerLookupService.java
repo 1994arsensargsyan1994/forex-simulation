@@ -1,4 +1,4 @@
-package org.arsen.forex.service.lookup;
+package org.arsen.forex.service.lookup.customer;
 
 import org.arsen.forex.common.exception.MissingCustomerException;
 import org.arsen.forex.persistence.customer.PersistentCustomer;
