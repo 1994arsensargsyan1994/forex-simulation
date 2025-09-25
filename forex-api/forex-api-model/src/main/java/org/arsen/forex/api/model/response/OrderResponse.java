@@ -8,7 +8,8 @@ public class OrderResponse extends FailureAwareResponse {
     private Long id;
     private String idempotencyKey;
     private OrderStatus status;
-    private boolean created;
+    private String failureReason;
+    private Boolean created;
 
     public OrderResponse() {
         super();
@@ -30,11 +31,11 @@ public class OrderResponse extends FailureAwareResponse {
         this.status = status;
     }
 
-    public boolean isCreated() {
+    public Boolean getCreated() {
         return created;
     }
 
-    public void setCreated(boolean created) {
+    public void setCreated(Boolean created) {
         this.created = created;
     }
 
@@ -44,5 +45,13 @@ public class OrderResponse extends FailureAwareResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
     }
 }

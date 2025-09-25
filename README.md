@@ -138,32 +138,39 @@ docker compose up
 ```
 **Success (200)**
 ```json
-{ "idempotencyKey": "5855", "status": "COMPLETED", "created": false, "successful": true }
-```
-**Failure (200)**
-```json
 {
-  "created": false,
-  "successful": false,
-  "failures": [ { "code": "failure.order.insufficient_funds", "reason": "Insufficient funds in the source account" } ]
+	"id": 402,
+	"idempotencyKey": "po28",
+	"status": "FAILED",
+	"failureReason": "INSUFFICIENT_FUNDS",
+	"created": true,
+	"successful": true
 }
 ```
 or in same case we keep failed order in db with FAILED status and reason
 ```json
 {
-	"id": 102,
+	"id": 402,
+	"idempotencyKey": "po28",
+	"status": "FAILED",
+	"failureReason": "INSUFFICIENT_FUNDS",
 	"created": false,
+	"successful": true
+}
+```
+**Failure (200)**
+```json
+{
 	"successful": false,
 	"failures": [
 		{
-			"code": "failure.order.insufficient_funds",
-			"reason": "Insufficient funds in the source account"
+			"code": "failure.order.same_account",
+			"reason": "Source and target accounts must be different"
 		}
 	]
 }
 ```
 Order statuses: `NEW`, `COMPLETED`, `FAILED`
-
 ---
 
 ### 2) Lookup Order Details

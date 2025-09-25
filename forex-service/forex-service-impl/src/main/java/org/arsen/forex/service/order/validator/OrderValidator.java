@@ -14,29 +14,12 @@ public interface OrderValidator {
  * Basic request checks: idempotency key & amount validity.
  */
 @Component
-class BasicRequestValidator implements OrderValidator {
+class BasicOrderValidator implements OrderValidator {
 
     @Override
     public void validate(OrderCreationContext ctx, List<OrderResultFailure> failures) {
         if (ctx.parameters().idempotencyKey() == null || ctx.parameters().idempotencyKey().isBlank()) {
             failures.add(OrderResultFailure.INVALID_KEY);
-        }
-        if (ctx.parameters().amount() == null || ctx.parameters().amount().signum() <= 0) {
-            failures.add(OrderResultFailure.INVALID_AMOUNT);
-        }
-    }
-}
-
-/**
- * Prevents transfers where from and to account IDs are identical.
- */
-@Component
-class SameAccountValidator implements OrderValidator {
-
-    @Override
-    public void validate(OrderCreationContext ctx, List<OrderResultFailure> out) {
-        if (ctx.parameters().sourceAccountId().equals(ctx.parameters().targetAccountId())) {
-            out.add(OrderResultFailure.SAME_ACCOUNT);
         }
     }
 }
@@ -45,7 +28,7 @@ class SameAccountValidator implements OrderValidator {
  * Prevents transfers that span across different customers.
  */
 @Component
-class SameCustomerValidator implements OrderValidator {
+class SameCustomerOrderValidator implements OrderValidator {
     @Override
     public void validate(OrderCreationContext ctx, List<OrderResultFailure> out) {
         if (!ctx.customer().id().equals(ctx.from().getCustomer().id())
@@ -60,7 +43,7 @@ class SameCustomerValidator implements OrderValidator {
  * Use this for forex/exchange scenarios.
  */
 @Component
-class SameCustomerDifferentCurrencyValidator implements OrderValidator {
+class SameCustomerDifferentCurrencyOrderValidator implements OrderValidator {
 
     @Override
     public void validate(OrderCreationContext ctx, List<OrderResultFailure> out) {
@@ -71,15 +54,10 @@ class SameCustomerDifferentCurrencyValidator implements OrderValidator {
 }
 
 @Component
-class SufficientFundsValidator implements OrderValidator {
+class SufficientFundsOrderValidator implements OrderValidator {
 
     @Override
     public void validate(OrderCreationContext ctx, List<OrderResultFailure> out) {
-        if (ctx.parameters().amount() == null) {
-            out.add(OrderResultFailure.INVALID_AMOUNT);
-            return;
-        }
-
         if (ctx.from().getBalance().compareTo(ctx.parameters().amount()) < 0) {
             out.add(OrderResultFailure.INSUFFICIENT_FUNDS);
         }

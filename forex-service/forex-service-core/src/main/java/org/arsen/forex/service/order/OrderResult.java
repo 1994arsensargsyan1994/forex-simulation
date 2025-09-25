@@ -10,32 +10,48 @@ public class OrderResult implements Result<OrderResultFailure> {
     private final Long id;
     private final String idempotencyKey;
     private final OrderStatus status;
-    private final boolean created;
+    private final String failureReason;
+    private final Boolean created;
 
     private final Collection<OrderResultFailure> failures;
 
-    public OrderResult(final Long id, final String idempotencyKey, final OrderStatus status, boolean created) {
+    private OrderResult(Long id, String idempotencyKey, Boolean created) {
         this.id = id;
         this.idempotencyKey = idempotencyKey;
         this.created = created;
-        this.status = status;
+        this.status = OrderStatus.COMPLETED;
         this.failures = null;
+        this.failureReason = null;
     }
 
-    public OrderResult(final Long id, final Collection<OrderResultFailure> failures) {
-        this.idempotencyKey = null;
+    private OrderResult(Long id, String idempotencyKey, String failureReason, Boolean created) {
         this.id = id;
-        this.created = false;
+        this.idempotencyKey = idempotencyKey;
+        this.created = created;
         this.status = OrderStatus.FAILED;
-        this.failures = failures;
+        this.failures = null;
+        this.failureReason = failureReason;
     }
 
-    public OrderResult(final Collection<OrderResultFailure> failures) {
-        this.idempotencyKey = null;
-        this.id = null;
+    private OrderResult(final Collection<OrderResultFailure> failures) {
         this.created = false;
         this.status = OrderStatus.FAILED;
         this.failures = failures;
+        this.id = null;
+        this.failureReason = null;
+        this.idempotencyKey = null;
+    }
+
+    public static OrderResult complied(Long id, String idempotencyKey, Boolean created) {
+        return new OrderResult(id, idempotencyKey, created);
+    }
+
+    public static OrderResult businessFailed(Long id, String idempotencyKey, String businessFailure, Boolean created) {
+        return new OrderResult(id, idempotencyKey, businessFailure, created);
+    }
+
+    public static OrderResult failed(Collection<OrderResultFailure> failures) {
+        return new OrderResult(failures);
     }
 
     @Override
@@ -57,5 +73,9 @@ public class OrderResult implements Result<OrderResultFailure> {
 
     public boolean isCreated() {
         return created;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
     }
 }

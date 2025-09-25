@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 class DefaultOrderService implements OrderService {
@@ -56,8 +57,8 @@ class DefaultOrderService implements OrderService {
             var order = existingTransfer.get();
 
             return order.isSuccess()
-                    ? new OrderResult(order.id(), order.getIdempotencyKey(), order.getStatus(), false)
-                    : new OrderResult(order.id(), List.of(OrderResultFailure.valueOf(order.getFailedReason())));
+                    ? OrderResult.complied(order.id(), order.getIdempotencyKey(), false)
+                    : OrderResult.businessFailed(order.id(), order.getIdempotencyKey(), order.getFailedReason(), false);
         }
 
         var failures = new ArrayList<OrderResultFailure>();
@@ -66,7 +67,7 @@ class DefaultOrderService implements OrderService {
 
         if (fromAccountOpt.isEmpty()) failures.add(OrderResultFailure.ACCOUNT_NOT_FOUND);
         if (toAccountOpt.isEmpty()) failures.add(OrderResultFailure.ACCOUNT_NOT_FOUND);
-        if (!failures.isEmpty()) return new OrderResult(failures);
+        if (!failures.isEmpty()) return OrderResult.failed(failures);
 
         final var fromAccount = fromAccountOpt.get();
         final var toAccount = toAccountOpt.get();
@@ -82,9 +83,10 @@ class DefaultOrderService implements OrderService {
             final PersistentOrder order = new PersistentOrder(
                     parameters.idempotencyKey(), fromAccount, toAccount, parameters.amount(), BigDecimal.ZERO, OrderStatus.FAILED
             );
-            order.setFailedReason(failures.get(0).name());
+            String reasonsString = getFailedReasonsString(failures);
+            order.setFailedReason(reasonsString);
             orderRepository.save(order);
-            return new OrderResult(order.id(), failures);
+            return OrderResult.businessFailed(order.id(), order.getIdempotencyKey(), order.getFailedReason(), true);
         }
 
         final var currencyRate = rateRepository.findByCurrencyFromAndCurrencyTo(fromAccount.getCurrency(), toAccount.getCurrency());
@@ -99,7 +101,7 @@ class DefaultOrderService implements OrderService {
         );
         orderRepository.save(order);
 
-        return new OrderResult(order.id(), order.getIdempotencyKey(), order.getStatus(), true);
+        return OrderResult.complied(order.id(), order.getIdempotencyKey(), true);
     }
 
     @Override
@@ -109,5 +111,11 @@ class DefaultOrderService implements OrderService {
                 .map(ImmutableOrderDetailsAdapter::new)
                 .map(LookupOrderDetailsResult::new)
                 .orElseGet(LookupOrderDetailsResult::notFound);
+    }
+
+    private String getFailedReasonsString(ArrayList<OrderResultFailure> failures) {
+        return failures.stream()
+                .map(OrderResultFailure::name)
+                .collect(Collectors.joining(","));
     }
 }
