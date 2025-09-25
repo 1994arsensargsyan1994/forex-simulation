@@ -16,9 +16,9 @@ class OpenApiConfiguration {
 
     @Bean
     OpenAPI customOpenAPI(
-            @Value("${urm.openapi.info.title}") final String title,
-            @Value("${urm.openapi.info.version}") final String version,
-            @Value("${urm.openapi.info.description}") final String description
+            @Value("${forex.openapi.info.title}") final String title,
+            @Value("${forex.openapi.info.version}") final String version,
+            @Value("${forex.openapi.info.description}") final String description
     ) {
         return new OpenAPI()
                 .components(
