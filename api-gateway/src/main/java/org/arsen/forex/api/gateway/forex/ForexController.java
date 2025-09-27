@@ -97,7 +97,7 @@ public class ForexController {
             summary = "${account.create.operation.summary}",
             description = "${account.create.operation.description}",
             responses = @ApiResponse(
-                    content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
+                    content = @Content(schema = @Schema(oneOf = AccountCreationRequest.class))
             )
     )
     @PostMapping(
@@ -120,7 +120,7 @@ public class ForexController {
             summary = "${accounts.lookup.operation.summary}",
             description = "${accounts.lookup.operation.description}",
             responses = @ApiResponse(
-                    content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
+                    content = @Content(schema = @Schema(oneOf = LookupAccountResponse.class))
             )
     )
     @GetMapping(
@@ -141,7 +141,7 @@ public class ForexController {
             summary = "${order.create.operation.summary}",
             description = "${order.create.operation.description}",
             responses = @ApiResponse(
-                    content = @Content(schema = @Schema(oneOf = CustomerCreationRequest.class))
+                    content = @Content(schema = @Schema(oneOf = OrderRequest.class))
             )
     )
     @PostMapping(
@@ -149,7 +149,7 @@ public class ForexController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public DeferredResult<ResponseEntity<OrderResponse>> createAccount(
+    public DeferredResult<ResponseEntity<OrderResponse>> createOrder(
             @NotNull @RequestHeader("Idempotency-Key") String idempotencyKey,
             @Valid @RequestBody final OrderRequest request
     ) {
@@ -164,7 +164,7 @@ public class ForexController {
             summary = "${order.lookup.details.operation.summary}",
             description = "${order.lookup.details.operation.description}",
             responses = @ApiResponse(
-                    content = @Content(schema = @Schema(oneOf = LookupCustomerDetailsResponse.class))
+                    content = @Content(schema = @Schema(oneOf = LookupOrderDetailsResponse.class))
             )
     )
     @GetMapping(path = "/order/{id}/details",
@@ -184,7 +184,7 @@ public class ForexController {
             summary = "${rate.lookup.operation.summary}",
             description = "${rate.lookup.operation.description}",
             responses = @ApiResponse(
-                    content = @Content(schema = @Schema(oneOf = LookupCustomerDetailsResponse.class))
+                    content = @Content(schema = @Schema(oneOf = LookupRatesResponse.class))
             )
     )
     @GetMapping(path = "/rate",
