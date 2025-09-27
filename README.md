@@ -6,9 +6,7 @@ A **Spring Boot** microservice system with **API Gateway + Forex service** (Grad
 > Swagger: `http://localhost:8081/swagger-ui/index.html`
 
 ---
----
 Requirements: Java 17+, Gradle, Docker, PostgreSQL
-
 ---
 🚀 How to Run the Project
 
